@@ -66,11 +66,12 @@ public class ExpoImageSequenceEncoderModule: Module {
     let url = URL(fileURLWithPath: p.output)
     let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
 
-    var profileLevel: CFString
+    var profileLevel: CFString = kVTProfileLevel_H264_Main_4_1
+
     if #available(iOS 17.0, *) {
-      profileLevel = kVTProfileLevel_H264_Main_AutoLevel
-    } else {
-      profileLevel = kVTProfileLevel_H264_Main_4_1
+      if let symbol = dlsym(dlopen(nil, RTLD_LAZY), "kVTProfileLevel_H264_Main_AutoLevel") {
+        profileLevel = unsafeBitCast(symbol, to: CFString.self)
+      }
     }
 
     let settings: [String: Any] = [
