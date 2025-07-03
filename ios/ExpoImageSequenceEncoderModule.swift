@@ -16,8 +16,7 @@ public class ExpoImageSequenceEncoderModule: Module {
     AsyncFunction("encode") { (options: [String: Any]) -> String in
       let params = try EncoderParams(dict: options)
 
-      // Run your CPU-heavy work on background thread
-      try await withCheckedThrowingContinuation { continuation in
+      return try await withCheckedThrowingContinuation { continuation in
         DispatchQueue.global(qos: .userInitiated).async {
           do {
             try Self.runEncode(params: params)
@@ -28,6 +27,7 @@ public class ExpoImageSequenceEncoderModule: Module {
         }
       }
     }
+
   }
 
   private struct EncoderParams {
