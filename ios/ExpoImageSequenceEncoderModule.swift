@@ -66,13 +66,20 @@ public class ExpoImageSequenceEncoderModule: Module {
     let url = URL(fileURLWithPath: p.output)
     let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
 
+    var profileLevel: CFString
+    if #available(iOS 17.0, *) {
+      profileLevel = kVTProfileLevel_H264_Main_AutoLevel
+    } else {
+      profileLevel = kVTProfileLevel_H264_Main_4_1
+    }
+
     let settings: [String: Any] = [
       AVVideoCodecKey: AVVideoCodecType.h264,
       AVVideoWidthKey: p.width,
       AVVideoHeightKey: p.height,
       AVVideoCompressionPropertiesKey: [
         AVVideoAverageBitRateKey: 3_000_000,  // 3 Mbps
-        AVVideoProfileLevelKey: kVTProfileLevel_H264_Main_AutoLevel,
+        AVVideoProfileLevelKey: profileLevel,
       ],
     ]
     let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
