@@ -76,9 +76,31 @@ public class ExpoImageSequenceEncoderModule: Module {
     } else {
       cleanOutputPath = p.output
     }
+
+    if FileManager.default.fileExists(atPath: cleanOutputPath) {
+      NSLog("🟢 [Encoder] Output file already exists — deleting.")
+      try? FileManager.default.removeItem(atPath: cleanOutputPath)
+    } else {
+      NSLog("🟢 [Encoder] No pre-existing output file.")
+    }
+
+    NSLog("🟢 [Encoder] Does output dir exist?")
+    let outputDir = (cleanOutputPath as NSString).deletingLastPathComponent
+    NSLog("🟢 [Encoder] outputDir: \(outputDir)")
+
+    var isDir: ObjCBool = false
+    if FileManager.default.fileExists(atPath: outputDir, isDirectory: &isDir) {
+      NSLog("✅ [Encoder] Output dir exists: \(isDir.boolValue)")
+    } else {
+      NSLog("❌ [Encoder] Output dir does NOT exist")
+    }
+
     let url = URL(fileURLWithPath: cleanOutputPath)
 
-    let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
+    NSLog("🟢 [Encoder] output URL: \(url.absoluteString)")
+    NSLog("🟢 [Encoder] output path: \(url.path)")
+
+    let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
 
     let profileLevel: String
 
@@ -87,21 +109,27 @@ public class ExpoImageSequenceEncoderModule: Module {
     } else {
       profileLevel = "Main Profile Level 4.1"
     }
+    NSLog("🟢 [Encoder] Writer created with profileLevel: \(profileLevel)")
 
     let settings: [String: Any] = [
       AVVideoCodecKey: AVVideoCodecType.h264,
       AVVideoWidthKey: p.width,
       AVVideoHeightKey: p.height,
-      AVVideoCompressionPropertiesKey: [
-        AVVideoAverageBitRateKey: 3_000_000,  // 3 Mbps
-        AVVideoProfileLevelKey: profileLevel,
-      ],
+      // AVVideoCompressionPropertiesKey: [
+      //   AVVideoAverageBitRateKey: 3_000_000,  // 3 Mbps
+      //   AVVideoProfileLevelKey: profileLevel,
+      // ],
     ]
-    NSLog("🟢 [Encoder] Writer created with profileLevel: \(profileLevel)")
+    NSLog("🟢 [Encoder] Video outputSettings: \(settings)")
 
-    let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
+    // let input: AVAssetWriterInput = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
+    // Right way to do the above:
+    let input = AVAssetWriterInput(
+      mediaType: .video, outputSettings: settings, sourceFormatHint: nil)
+    NSLog("🟢 [Encoder] Created AVAssetWriterInput")
     input.expectsMediaDataInRealTime = false
     if writer.canAdd(input) {
+      NSLog("🟢 [Encoder] Adding input to writer")
       writer.add(input)
       NSLog("🟢 [Encoder] Added writer input")
     } else {
@@ -119,6 +147,7 @@ public class ExpoImageSequenceEncoderModule: Module {
         kCVPixelBufferWidthKey as String: p.width,
         kCVPixelBufferHeightKey as String: p.height,
       ])
+    NSLog("🟢 [Encoder] PixelBufferAdaptor created: \(adaptor)")
     NSLog("🟢 [Encoder] PixelBufferAdaptor pool: \(String(describing: adaptor.pixelBufferPool))")
 
     guard adaptor.pixelBufferPool != nil else {
