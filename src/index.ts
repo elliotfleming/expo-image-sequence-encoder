@@ -1,7 +1,7 @@
 // src/index.ts
 
-// export { default } from './ExpoImageSequenceEncoderModule'
-// export * from './ExpoImageSequenceEncoder.types'
+export { default } from './ExpoImageSequenceEncoderModule'
+export * from './ExpoImageSequenceEncoder.types'
 
 import ExpoImageSequenceEncoderModule from './ExpoImageSequenceEncoderModule'
 import { EncoderOptions } from './ExpoImageSequenceEncoder.types'
