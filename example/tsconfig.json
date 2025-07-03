@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "expo-image-sequence-encoder": ["../src/index"],
+      "expo-image-sequence-encoder/*": ["../src/*"]
+    }
+  }
+}
