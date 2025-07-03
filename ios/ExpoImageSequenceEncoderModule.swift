@@ -70,7 +70,14 @@ public class ExpoImageSequenceEncoderModule: Module {
     try? FileManager.default.removeItem(atPath: p.output)
 
     // 1. Writer setup ---------------------------------------------------------
-    let url = URL(fileURLWithPath: p.output)
+    let cleanOutputPath: String
+    if p.output.hasPrefix("file://") {
+      cleanOutputPath = String(p.output.dropFirst("file://".count))
+    } else {
+      cleanOutputPath = p.output
+    }
+    let url = URL(fileURLWithPath: cleanOutputPath)
+
     let writer = try AVAssetWriter(outputURL: url, fileType: .mp4)
 
     let profileLevel: String
@@ -94,7 +101,16 @@ public class ExpoImageSequenceEncoderModule: Module {
 
     let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
     input.expectsMediaDataInRealTime = false
-    writer.add(input)
+    if writer.canAdd(input) {
+      writer.add(input)
+      NSLog("🟢 [Encoder] Added writer input")
+    } else {
+      NSLog("❌ [Encoder] Cannot add AVAssetWriterInput")
+      throw NSError(
+        domain: "ImageSeqEncoder",
+        code: 10,
+        userInfo: [NSLocalizedDescriptionKey: "Cannot add AVAssetWriterInput"])
+    }
 
     let adaptor = AVAssetWriterInputPixelBufferAdaptor(
       assetWriterInput: input,
