@@ -1,3 +1,5 @@
+// ios/ExpoImageSequenceEncoderModule.swift
+
 import AVFoundation
 import ExpoModulesCore
 import UIKit
