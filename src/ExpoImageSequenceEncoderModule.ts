@@ -1,12 +1,11 @@
-import { NativeModule, requireNativeModule } from 'expo';
+// src/ExpoImageSequenceEncoderModule.ts
 
-import { ExpoImageSequenceEncoderModuleEvents } from './ExpoImageSequenceEncoder.types';
+import { NativeModule, requireNativeModule } from 'expo'
+
+import { EncoderOptions, ExpoImageSequenceEncoderModuleEvents } from './ExpoImageSequenceEncoder.types'
 
 declare class ExpoImageSequenceEncoderModule extends NativeModule<ExpoImageSequenceEncoderModuleEvents> {
-  PI: number;
-  hello(): string;
-  setValueAsync(value: string): Promise<void>;
+  encode(options: EncoderOptions): Promise<string>
 }
 
-// This call loads the native module object from the JSI.
-export default requireNativeModule<ExpoImageSequenceEncoderModule>('ExpoImageSequenceEncoder');
+export default requireNativeModule<ExpoImageSequenceEncoderModule>('ExpoImageSequenceEncoder')

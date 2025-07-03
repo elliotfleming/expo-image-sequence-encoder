@@ -19,7 +19,15 @@
     "react-native",
     "expo",
     "expo-image-sequence-encoder",
-    "ExpoImageSequenceEncoder"
+    "ExpoImageSequenceEncoder",
+    "image to video",
+    "image sequence",
+    "video encoding",
+    "mp4",
+    "png to mp4",
+    "on-device encoding",
+    "video",
+    "encoder"
   ],
   "repository": "https://github.com/elliotfleming/expo-image-sequence-encoder",
   "bugs": {

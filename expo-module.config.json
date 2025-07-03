@@ -1,9 +1,11 @@
 {
-  "platforms": ["apple", "android", "web"],
+  "platforms": ["apple", "android"],
   "apple": {
     "modules": ["ExpoImageSequenceEncoderModule"]
   },
   "android": {
-    "modules": ["expo.modules.imagesequenceencoder.ExpoImageSequenceEncoderModule"]
+    "modules": [
+      "expo.modules.imagesequenceencoder.ExpoImageSequenceEncoderModule"
+    ]
   }
 }

@@ -1,19 +1,16 @@
-import type { StyleProp, ViewStyle } from 'react-native';
+// src/ExpoImageSequenceEncoder.types.ts
 
-export type OnLoadEventPayload = {
-  url: string;
-};
+export type ExpoImageSequenceEncoderModuleEvents = {}
 
-export type ExpoImageSequenceEncoderModuleEvents = {
-  onChange: (params: ChangeEventPayload) => void;
-};
-
-export type ChangeEventPayload = {
-  value: string;
-};
-
-export type ExpoImageSequenceEncoderViewProps = {
-  url: string;
-  onLoad: (event: { nativeEvent: OnLoadEventPayload }) => void;
-  style?: StyleProp<ViewStyle>;
-};
+export interface EncoderOptions {
+  /** Directory containing the frame-PNGs. Must end with “/”. */
+  folder: string
+  /** Frames per second for the output file. */
+  fps: number
+  /** Output video width (pixels). */
+  width: number
+  /** Output video height (pixels). */
+  height: number
+  /** Absolute destination path for the MP4 (will be overwritten). */
+  output: string
+}
