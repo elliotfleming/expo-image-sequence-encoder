@@ -1,6 +1,6 @@
 {
   "name": "expo-image-sequence-encoder",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "On-device PNG → MP4 encoder for React-Native & Expo",
   "main": "build/index.js",
   "types": "build/index.d.ts",
