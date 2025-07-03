@@ -91,7 +91,6 @@ public class ExpoImageSequenceEncoderModule: Module {
       ],
     ]
     NSLog("🟢 [Encoder] Writer created with profileLevel: \(profileLevel)")
-    NSLog("🟢 [Encoder] PixelBufferAdaptor pool: \(String(describing: adaptor.pixelBufferPool))")
 
     let input = AVAssetWriterInput(mediaType: .video, outputSettings: settings)
     input.expectsMediaDataInRealTime = false
@@ -104,6 +103,7 @@ public class ExpoImageSequenceEncoderModule: Module {
         kCVPixelBufferWidthKey as String: p.width,
         kCVPixelBufferHeightKey as String: p.height,
       ])
+    NSLog("🟢 [Encoder] PixelBufferAdaptor pool: \(String(describing: adaptor.pixelBufferPool))")
 
     guard adaptor.pixelBufferPool != nil else {
       throw NSError(
