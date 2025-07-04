@@ -140,25 +140,32 @@ public class ExpoImageSequenceEncoderModule: Module {
         userInfo: [NSLocalizedDescriptionKey: "Cannot add AVAssetWriterInput"])
     }
 
+    let attributes: [String: Any] = [
+      kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
+      kCVPixelBufferWidthKey as String: p.width,
+      kCVPixelBufferHeightKey as String: p.height,
+      kCVPixelBufferIOSurfacePropertiesKey as String: [:],  // Always needed
+      kCVPixelBufferOpenGLCompatibilityKey as String: true,  // Helps on older devices
+      kCVPixelBufferMetalCompatibilityKey as String: true,  // Helps on modern devices
+    ]
     let adaptor = AVAssetWriterInputPixelBufferAdaptor(
       assetWriterInput: input,
-      sourcePixelBufferAttributes: [
-        kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
-        kCVPixelBufferWidthKey as String: p.width,
-        kCVPixelBufferHeightKey as String: p.height,
-      ])
+      sourcePixelBufferAttributes: attributes)
+
     NSLog("🟢 [Encoder] PixelBufferAdaptor created: \(adaptor)")
     NSLog("🟢 [Encoder] PixelBufferAdaptor pool: \(String(describing: adaptor.pixelBufferPool))")
 
-    guard adaptor.pixelBufferPool != nil else {
+    guard writer.startWriting() else { throw writer.error! }
+    writer.startSession(atSourceTime: .zero)
+
+    guard let pxBufPool = adaptor.pixelBufferPool else {
+      NSLog("❌ [Encoder] Pixel buffer pool is nil")
       throw NSError(
         domain: "ImageSeqEncoder",
         code: 7,
         userInfo: [NSLocalizedDescriptionKey: "Pixel buffer pool creation failed"])
     }
-
-    guard writer.startWriting() else { throw writer.error! }
-    writer.startSession(atSourceTime: .zero)
+    NSLog("✅ [Encoder] PixelBufferPool created: \(pxBufPool)")
 
     // 2. Enumerate PNG frames -------------------------------------------------
     let fileNames = try FileManager.default
