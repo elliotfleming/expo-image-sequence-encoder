@@ -11,6 +11,8 @@ export interface EncoderOptions {
   width: number
   /** Output video height (pixels). */
   height: number
-  /** Absolute destination path for the MP4 (will be overwritten). */
+  /** Absolute destination path for the MOV/MP4 (will be overwritten). */
   output: string
+  /** Encoding container to use */
+  container?: 'mp4' | 'mov'
 }

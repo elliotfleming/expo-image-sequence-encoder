@@ -37,6 +37,7 @@ public class ExpoImageSequenceEncoderModule: Module {
     let width: Int
     let height: Int
     let output: String
+    let container: String = "mp4"
 
     init(dict: [String: Any]) throws {
       guard
@@ -44,18 +45,28 @@ public class ExpoImageSequenceEncoderModule: Module {
         let fps = dict["fps"] as? NSNumber,
         let width = dict["width"] as? NSNumber,
         let height = dict["height"] as? NSNumber,
-        let output = dict["output"] as? String
+        let output = dict["output"] as? String,
+        let container = dict["container"] as? String
       else {
         throw NSError(
           domain: "ImageSeqEncoder", code: 1,
           userInfo: [NSLocalizedDescriptionKey: "Missing options"])
       }
 
-      self.folder = folder.hasSuffix("/") ? folder : folder + "/"
+      func clean(_ s: String) -> String {
+        if let url = URL(string: s), url.scheme == "file" {
+          NSLog("🟢 [Encoder] Detected file URL: \(url)")
+          return url.path  // → “/var/mobile/…/chat_frames”
+        }
+        NSLog("🟢 [Encoder] Not a file URL: \(s)")
+        return s  // not a file-URL, leave untouched
+      }
+
+      self.folder = clean(folder)
+      self.output = clean(output)
       self.fps = fps.int32Value
       self.width = width.intValue
       self.height = height.intValue
-      self.output = output
     }
   }
 
@@ -65,27 +76,21 @@ public class ExpoImageSequenceEncoderModule: Module {
     NSLog("🟢 [Encoder] p.fps: \(p.fps)")
     NSLog("🟢 [Encoder] p.width x height: \(p.width)x\(p.height)")
     NSLog("🟢 [Encoder] p.output: \(p.output)")
+    NSLog("🟢 [Encoder] p.container: \(p.container)")
 
     // Clean any existing file at `output`
     try? FileManager.default.removeItem(atPath: p.output)
 
     // 1. Writer setup ---------------------------------------------------------
-    let cleanOutputPath: String
-    if p.output.hasPrefix("file://") {
-      cleanOutputPath = String(p.output.dropFirst("file://".count))
-    } else {
-      cleanOutputPath = p.output
-    }
-
-    if FileManager.default.fileExists(atPath: cleanOutputPath) {
+    if FileManager.default.fileExists(atPath: p.output) {
       NSLog("🟢 [Encoder] Output file already exists — deleting.")
-      try? FileManager.default.removeItem(atPath: cleanOutputPath)
+      try? FileManager.default.removeItem(atPath: p.output)
     } else {
       NSLog("🟢 [Encoder] No pre-existing output file.")
     }
 
     NSLog("🟢 [Encoder] Does output dir exist?")
-    let outputDir = (cleanOutputPath as NSString).deletingLastPathComponent
+    let outputDir = (p.output as NSString).deletingLastPathComponent
     NSLog("🟢 [Encoder] outputDir: \(outputDir)")
 
     var isDir: ObjCBool = false
@@ -95,12 +100,13 @@ public class ExpoImageSequenceEncoderModule: Module {
       NSLog("❌ [Encoder] Output dir does NOT exist")
     }
 
-    let url = URL(fileURLWithPath: cleanOutputPath)
+    let url: URL = URL(fileURLWithPath: p.output)
 
     NSLog("🟢 [Encoder] output URL: \(url.absoluteString)")
     NSLog("🟢 [Encoder] output path: \(url.path)")
 
-    let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
+    let writer = try AVAssetWriter(
+      outputURL: url, fileType: p.container == "mov" ? .mov : .mp4)
 
     let profileLevel: String
 
@@ -169,7 +175,7 @@ public class ExpoImageSequenceEncoderModule: Module {
 
     // 2. Enumerate PNG frames -------------------------------------------------
     let fileNames = try FileManager.default
-      .contentsOfDirectory(atPath: p.folder)
+      .contentsOfDirectory(atPath: clean(p.folder))
       .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
 
     guard !fileNames.isEmpty else {

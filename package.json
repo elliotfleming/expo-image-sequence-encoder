@@ -23,8 +23,10 @@
     "image to video",
     "image sequence",
     "video encoding",
+    "mov",
     "mp4",
     "png to mp4",
+    "png to mov",
     "on-device encoding",
     "video",
     "encoder"

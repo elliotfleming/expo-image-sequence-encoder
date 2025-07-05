@@ -1,22 +1,21 @@
-# Expo Image Sequence Encoder
+e# Expo Image Sequence Encoder
 
 [![npm version](https://badge.fury.io/js/expo-image-sequence-encoder.svg)](https://badge.fury.io/js/expo-image-sequence-encoder) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-**On‑device PNG → MP4 encoder for React‑Native & Expo**
+**On‑device PNG → MP4/MOV encoder for React‑Native & Expo**
 
 *No FFmpeg • No GPL • Just the platform video encoders — `AVAssetWriter` (iOS) & `MediaCodec` (Android)*
 
 ## Table of Contents
 
-- [Expo Image Sequence Encoder](#expo-image-sequence-encoder)
-  - [Table of Contents](#tableofcontents)
-  - [Features](#features)
-  - [Installation](#installation)
-  - [Usage](#usage)
-    - [API](#api)
-  - [Troubleshooting](#troubleshooting)
-  - [Contributing](#contributing)
-  - [License](#license)
+- [Table of Contents](#tableofcontents)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [API](#api)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
@@ -70,13 +69,14 @@ console.log('MP4 saved at', uri);
 
 ### API
 
-| Option   | Type   | Description                                                     |
-| -------- | ------ | --------------------------------------------------------------- |
-| `folder` | string | Directory ending with `/`, containing sequential **PNG** frames |
-| `fps`    | number | Frames per second in the output file                            |
-| `width`  | number | Output width in pixels                                          |
-| `height` | number | Output height in pixels                                         |
-| `output` | string | Absolute path for the MP4 (overwritten if already exists)       |
+| Option      | Type   | Description                                                     |
+| ------------| ------ | --------------------------------------------------------------- |
+| `folder`    | string | Directory ending with `/`, containing sequential **PNG** frames |
+| `fps`       | number | Frames per second in the output file                            |
+| `width`     | number | Output width in pixels                                          |
+| `height`    | number | Output height in pixels                                         |
+| `output`    | string | Absolute path for the video (overwritten if already exists)     |
+| `container` | string | Output container format, either `mp4` or `mov` (default: `mp4`) |
 
 Returns **`Promise<string>`** – absolute file URI of the saved video.
 
@@ -87,7 +87,7 @@ Returns **`Promise<string>`** – absolute file URI of the saved video.
 
 | Problem                                          | Fix                                                                                                         |
 | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
-| **`Native module not linked`**                   | Rebuild the dev client (`eas build --profile development`) or run `npx expo run-android / run-ios`. |
+| **`Native module not linked`**                   | Rebuild the dev client (`eas build --profile development`) or run `npx expo run-android / run-ios`.         |
 | **`INFO_OUTPUT_FORMAT_CHANGED twice` (Android)** | Stick to even dimensions (e.g. 1280×720); some encoders reject odd sizes.                                   |
 | **iOS < 12 crash**                               | The podspec targets iOS 12+. Older OS versions are not supported.                                           |
 
