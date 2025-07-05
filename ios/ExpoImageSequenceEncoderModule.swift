@@ -45,13 +45,17 @@ public class ExpoImageSequenceEncoderModule: Module {
         let fps = dict["fps"] as? NSNumber,
         let width = dict["width"] as? NSNumber,
         let height = dict["height"] as? NSNumber,
-        let output = dict["output"] as? String,
-        let container = dict["container"] as? String
+        let output = dict["output"] as? String
       else {
         throw NSError(
           domain: "ImageSeqEncoder", code: 1,
           userInfo: [NSLocalizedDescriptionKey: "Missing options"])
       }
+
+      self.fps = fps.int32Value
+      self.width = width.intValue
+      self.height = height.intValue
+      self.container = (dict["container"] as? String)?.lowercased() ?? "mp4"
 
       func clean(_ s: String) -> String {
         if let url = URL(string: s), url.scheme == "file" {
@@ -64,9 +68,6 @@ public class ExpoImageSequenceEncoderModule: Module {
 
       self.folder = clean(folder)
       self.output = clean(output)
-      self.fps = fps.int32Value
-      self.width = width.intValue
-      self.height = height.intValue
     }
   }
 
@@ -175,7 +176,7 @@ public class ExpoImageSequenceEncoderModule: Module {
 
     // 2. Enumerate PNG frames -------------------------------------------------
     let fileNames = try FileManager.default
-      .contentsOfDirectory(atPath: clean(p.folder))
+      .contentsOfDirectory(atPath: p.folder)
       .sorted { $0.localizedStandardCompare($1) == .orderedAscending }
 
     guard !fileNames.isEmpty else {
