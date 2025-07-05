@@ -37,7 +37,7 @@ public class ExpoImageSequenceEncoderModule: Module {
     let width: Int
     let height: Int
     let output: String
-    let container: String = "mp4"
+    let container: String
 
     init(dict: [String: Any]) throws {
       guard
