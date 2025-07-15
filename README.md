@@ -1,4 +1,4 @@
-e# Expo Image Sequence Encoder
+# Expo Image Sequence Encoder
 
 [![npm version](https://badge.fury.io/js/expo-image-sequence-encoder.svg)](https://badge.fury.io/js/expo-image-sequence-encoder) [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -8,14 +8,15 @@ e# Expo Image Sequence Encoder
 
 ## Table of Contents
 
-- [Table of Contents](#tableofcontents)
-- [Features](#features)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [API](#api)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
+- [Expo Image Sequence Encoder](#expo-image-sequence-encoder)
+  - [Table of Contents](#tableofcontents)
+  - [Features](#features)
+  - [Installation](#installation)
+  - [Usage](#usage)
+    - [API](#api)
+  - [Troubleshooting](#troubleshooting)
+  - [Contributing](#contributing)
+  - [License](#license)
 
 ## Features
 
